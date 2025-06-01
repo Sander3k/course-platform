@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Section */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 40px;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-box h1 {
+            color: #f5f5f5;
+            margin-bottom: 32px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 2px;
+            color: #e5e5e5;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .btn {
+            background: #f5f5f5;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #d0d0d0;
+        }
+
+        .demo-info {
+            margin-top: 24px;
+            padding: 16px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 2px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .demo-info code {
+            background: #000;
+            padding: 2px 4px;
+            border-radius: 2px;
+            color: #ccc;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 24px 32px;
+            border-radius: 2px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #f5f5f5;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #333;
+            color: #e5e5e5;
+            padding: 8px 16px;
+            border-radius: 2px;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #444;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 2px;
+            padding: 24px;
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            color: #f5f5f5;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .add-chapter-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #333;
+        }
+
+        .file-upload {
+            margin-bottom: 16px;
+        }
+
+        .file-upload input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 2px;
+            color: #e5e5e5;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .chapter-title-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 2px;
+            margin-bottom: 16px;
+            color: #e5e5e5;
+            font-size: 14px;
+        }
+
+        .chapter-title-input:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f5f5f5;
+            color: #000;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .add-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* Chapters List */
+        .chapters-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .chapter-item {
+            padding: 16px;
+            margin-bottom: 8px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chapter-item:hover {
+            background: #222;
+            border-color: #333;
+        }
+
+        .chapter-item.active {
+            background: #333;
+            border-color: #666;
+        }
+
+        .chapter-name {
+            font-weight: 400;
+            font-size: 14px;
+            color: #e5e5e5;
+        }
+
+        .delete-chapter-btn {
+            background: #333;
+            color: #e5e5e5;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-chapter-btn:hover {
+            background: #555;
+        }
+
+        /* Document Viewer */
+        .document-viewer {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 2px;
+            padding: 32px;
+            min-height: 700px;
+        }
+
+        .viewer-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #333;
+        }
+
+        .viewer-header h2 {
+            color: #f5f5f5;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .document-frame {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #333;
+            border-radius: 2px;
+        }
+
+        .no-document {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 120px;
+        }
+
+        .no-document .icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .download-section {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .download-section .icon {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            opacity: 0.7;
+        }
+
+        .download-section h3 {
+            color: #f5f5f5;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .download-section p {
+            color: #888;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .download-btn {
+            background: #f5f5f5;
+            color: #000;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 2px;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 24px;
+            line-height: 1.4;
+        }
+
+        /* Scrollbar styling */
+        .chapters-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chapters-list::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .chapters-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .chapters-list::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 16px;
+            }
+            
+            .header {
+                padding: 20px 24px;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .sidebar {
+                padding: 20px;
+            }
+            
+            .document-viewer {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <div class="login-box">
+            <h1>Course Management</h1>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="container">
+            <div class="header">
+                <h1>Course Content</h1>
+                <button class="btn logout-btn" onclick="logout()">Sign Out</button>
+            </div>
+
+            <div class="main-content">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="add-chapter-section">
+                        <h2>Add Chapter</h2>
+                        <input type="text" id="chapterTitle" class="chapter-title-input" placeholder="Chapter title">
+                        <div class="file-upload">
+                            <input type="file" id="documentFile" accept=".pdf,.doc,.docx" onchange="previewFile()">
+                        </div>
+                        <button class="add-btn" onclick="addChapter()">Add Chapter</button>
+                    </div>
+
+                    <div class="chapters-section">
+                        <h2>Chapters</h2>
+                        <div id="chaptersList" class="chapters-list">
+                            <div class="no-document">
+                                <div class="icon">—</div>
+                                <p>No chapters added yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Viewer -->
+                <div class="document-viewer">
+                    <div class="viewer-header">
+                        <h2 id="currentChapterTitle">Select a chapter</h2>
+                    </div>
+                    <div id="documentContent">
+                        <div class="no-document">
+                            <div class="icon">←</div>
+                            <p>Select a chapter to view content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage (in memory)
+        let chapters = [];
+        let currentChapter = null;
+
+        // Login functionality
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simple login check
+            if (username === 'admin' && password === 'course123') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadChapters();
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Chapter functionality
+        function addChapter() {
+            const title = document.getElementById('chapterTitle').value;
+            const fileInput = document.getElementById('documentFile');
+            
+            if (!title.trim()) {
+                alert('Enter chapter title');
+                return;
+            }
+            
+            if (!fileInput.files[0]) {
+                alert('Select a document');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const chapter = {
+                id: Date.now(),
+                title: title.trim(),
+                file: file,
+                fileUrl: URL.createObjectURL(file)
+            };
+
+            chapters.push(chapter);
+            
+            // Reset form
+            document.getElementById('chapterTitle').value = '';
+            document.getElementById('documentFile').value = '';
+            
+            updateChaptersList();
+        }
+
+        function updateChaptersList() {
+            const list = document.getElementById('chaptersList');
+            
+            if (chapters.length === 0) {
+                list.innerHTML = `
+                    <div class="no-document">
+                        <div class="icon">—</div>
+                        <p>No chapters added yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = chapters.map(chapter => `
+                <div class="chapter-item" onclick="openChapter(${chapter.id})">
+                    <span class="chapter-name">${chapter.title}</span>
+                    <button class="delete-chapter-btn" onclick="deleteChapter(event, ${chapter.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function openChapter(chapterId) {
+            const chapter = chapters.find(c => c.id === chapterId);
+            if (!chapter) return;
+
+            currentChapter = chapter;
+            document.getElementById('currentChapterTitle').textContent = chapter.title;
+            
+            // Update active state
+            document.querySelectorAll('.chapter-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.chapter-item').classList.add('active');
+
+            // Show document
+            const content = document.getElementById('documentContent');
+            
+            if (chapter.file.type === 'application/pdf') {
+                // PDF display
+                content.innerHTML = `<iframe src="${chapter.fileUrl}" class="document-frame"></iframe>`;
+            } else if (chapter.file.type.includes('word') || chapter.file.name.endsWith('.docx') || chapter.file.name.endsWith('.doc')) {
+                // Word document (basic display)
+                content.innerHTML = `
+                    <div class="download-section">
+                        <div class="icon">—</div>
+                        <h3>${chapter.title}</h3>
+                        <p>Word document detected</p>
+                        <a href="${chapter.fileUrl}" download="${chapter.file.name}" class="download-btn">Download Document</a>
+                        <div class="note">
+                            For optimal viewing, convert Word documents to PDF format.
+                        </div>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="no-document">
+                        <div class="icon">!</div>
+                        <p>Unsupported file type</p>
+                        <div style="font-size: 12px; margin-top: 8px; color: #555;">Use PDF or Word documents</div>
+                    </div>
+                `;
+            }
+        }
+
+        function deleteChapter(event, chapterId) {
+            event.stopPropagation();
+            if (confirm('Delete this chapter?')) {
+                const chapterIndex = chapters.findIndex(c => c.id === chapterId);
+                if (chapterIndex > -1) {
+                    // Clean up URL
+                    URL.revokeObjectURL(chapters[chapterIndex].fileUrl);
+                    chapters.splice(chapterIndex, 1);
+                    updateChaptersList();
+                    
+                    // Clear viewer if this was the current chapter
+                    if (currentChapter && currentChapter.id === chapterId) {
+                        document.getElementById('currentChapterTitle').textContent = 'Select a chapter';
+                        document.getElementById('documentContent').innerHTML = `
+                            <div class="no-document">
+                                <div class="icon">←</div>
+                                <p>Select a chapter to view content</p>
+                            </div>
+                        `;
+                        currentChapter = null;
+                    }
+                }
+            }
+        }
+
+        function previewFile() {
+            const fileInput = document.getElementById('documentFile');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const fileType = file.type;
+                const fileName = file.name;
+                
+                if (fileType === 'application/pdf') {
+                    console.log('PDF file detected:', fileName);
+                } else if (fileType.includes('word') || fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
+                    console.log('Word document detected:', fileName);
+                } else {
+                    alert('Only PDF and Word documents are allowed');
+                    fileInput.value = '';
+                }
+            }
+        }
+
+        function loadChapters() {
+            updateChaptersList();
+        }
+    </script>
+</body>
+</html>
